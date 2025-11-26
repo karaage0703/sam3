@@ -210,16 +210,18 @@ def load_video_frames_from_video_file(
     compute_device=torch.device("cuda"),
 ):
     """Load the video frames from a video file."""
-    import decord
+    from sam3.utils.decord_compat import VideoReader
 
     img_mean = torch.tensor(img_mean, dtype=torch.float32)[:, None, None]
     img_std = torch.tensor(img_std, dtype=torch.float32)[:, None, None]
     # Get the original video height and width
-    decord.bridge.set_bridge("torch")
-    video_height, video_width, _ = decord.VideoReader(video_path).next().shape
+    reader = VideoReader(video_path)
+    first_frame = reader.next()
+    video_height, video_width, _ = first_frame.shape
     # Iterate over all frames in the video
     images = []
-    for frame in decord.VideoReader(video_path, width=image_size, height=image_size):
+    reader_resized = VideoReader(video_path, width=image_size, height=image_size)
+    for frame in reader_resized:
         images.append(frame.permute(2, 0, 1))
 
     images = torch.stack(images, dim=0).float() / 255.0
