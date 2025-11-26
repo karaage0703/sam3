@@ -20,7 +20,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ### 2. リポジトリのクローン
 
 ```bash
-git clone https://github.com/facebookresearch/sam3.git
+git clone https://github.com/karaage0703/sam3.git
 cd sam3
 ```
 
